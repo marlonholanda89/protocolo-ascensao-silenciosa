@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard - Protocolo Ascensão Silenciosa</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        body { background:#0D0D0D; color:#FFF; font-family:'Roboto',sans-serif; margin:0; padding:0; }
+        header { background:#111; text-align:center; padding:30px 20px; border-bottom:2px solid #D4AF37; }
+        header h1 { font-size:2.5em; margin:0; color:#D4AF37; }
+        header p { margin:5px 0 0; color:#CCC; font-size:1.2em; }
+
+        nav { display:flex; justify-content:center; background:#1a1a1a; padding:15px; gap:20px; }
+        nav a { color:#D4AF37; text-decoration:none; font-weight:bold; }
+        nav a:hover { color:#FFF; }
+
+        .stats { display:flex; justify-content:center; gap:50px; padding:30px 0; }
+        .stats div { background:#1a1a1a; border-radius:10px; padding:20px 40px; text-align:center; box-shadow:0 0 15px rgba(212,175,55,0.4); }
+        .stats h3 { margin:0; font-size:1.5em; color:#D4AF37; }
+        .stats p { margin:5px 0 0; color:#CCC; font-size:1.1em; }
+
+        .badges { display:flex; justify-content:center; gap:25px; flex-wrap:wrap; padding:20px; }
+        .badge { background:#1a1a1a; padding:15px; border-radius:50%; width:100px; height:100px; display:flex; align-items:center; justify-content:center; font-weight:bold; color:#D4AF37; box-shadow:0 0 10px rgba(212,175,55,0.5); }
+
+        .daily { text-align:center; padding:20px 40px; }
+        .daily img { max-width:200px; border-radius:10px; margin-top:10px; box-shadow:0 0 20px rgba(212,175,55,0.5); }
+        .daily p { font-size:1.2em; color:#CCC; margin:5px 0; }
+
+        .actions { display:flex; justify-content:center; gap:20px; flex-wrap:wrap; padding:30px; }
+        .actions a { background:#D4AF37; color:#0D0D0D; padding:15px 30px; text-decoration:none; border-radius:5px; font-weight:bold; transition:0.3s; }
+        .actions a:hover { background:#b9952f; }
+
+        footer { background:#111; color:#888; text-align:center; padding:20px; margin-top:50px; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Bem-vindo, {{nome}}!</h1>
+    <p>Plano: {{plano}} | Pontos: {{pontos}} | Streak: {{streak}} dias</p>
+</header>
+
+<nav>
+    <a href="/conteudo">Conteúdo Diário</a>
+    <a href="/pagamento">Upgrade de Plano</a>
+    <a href="/planos">Planos</a>
+    <a href="/logout">Sair</a>
+</nav>
+
+<section class="stats">
+    <div>
+        <h3>{{pontos}}</h3>
+        <p>Pontos Totais</p>
+    </div>
+    <div>
+        <h3>{{streak}}</h3>
+        <p>Dias Consecutivos</p>
+    </div>
+</section>
+
+<section class="badges">
+    <div class="badge">💪</div>
+    <div class="badge">🧠</div>
+    <div class="badge">🔥</div>
+</section>
+
+<section class="daily">
+    <h2>Frase Motivacional do Dia</h2>
+    <p>"Disciplina silenciosa. Ascensão inevitável."</p>
+    <img src="{{ url_for('static', filename='img/vegeta1.jpeg') }}" alt="Vegeta Inspiração">
+</section>
+
+<section class="actions">
+    <a href="/completar_dia">Completar Dia (ganhar pontos)</a>
+    <a href="/conteudo">Ver Conteúdo</a>
+</section>
+
+<footer>
+    &copy; 2026 Protocolo Ascensão Silenciosa. Todos os direitos reservados.
+</footer>
+
+</body>
+</html>

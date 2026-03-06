@@ -1,0 +1,153 @@
+/* Geral */
+body {
+    background: #0D0D0D;
+    color: #FFFFFF;
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* Links */
+a {
+    color: #D4AF37;
+    text-decoration: none;
+}
+a:hover {
+    text-decoration: underline;
+}
+
+/* Header */
+header {
+    background: #111111;
+    padding: 20px;
+    text-align: center;
+    border-bottom: 2px solid #D4AF37;
+}
+header h1 {
+    color: #D4AF37;
+    font-size: 2rem;
+    margin: 0;
+}
+header p {
+    color: #CCC;
+    margin: 5px 0 0;
+}
+
+/* Main Cards / Plans / Conteúdo */
+.card, .plan {
+    background: #1a1a1a;
+    border-radius: 15px;
+    padding: 25px;
+    text-align: center;
+    box-shadow: 0 0 15px rgba(212,175,55,0.4);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+.card:hover, .plan:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0 25px rgba(212,175,55,0.7);
+}
+.card h2, .plan h2 {
+    color: #D4AF37;
+    margin-bottom: 10px;
+}
+.card p, .plan p {
+    color: #CCCCCC;
+    margin-bottom: 15px;
+}
+.card button, .plan button, .actions a {
+    background: #D4AF37;
+    color: #0D0D0D;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+.card button:hover, .plan button:hover, .actions a:hover {
+    background: #b9952f;
+}
+
+/* Dashboard */
+.stats {
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+    padding: 30px 0;
+}
+.stats div {
+    background: #1a1a1a;
+    border-radius: 10px;
+    padding: 20px 40px;
+    text-align: center;
+    box-shadow: 0 0 15px rgba(212,175,55,0.4);
+}
+.stats h3 { color: #D4AF37; margin: 0; font-size: 1.5em; }
+.stats p { color: #CCC; margin:5px 0 0; font-size:1.1em; }
+
+.badges {
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+    flex-wrap: wrap;
+    padding: 20px;
+}
+.badge {
+    background: #1a1a1a;
+    padding: 15px;
+    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: #D4AF37;
+    box-shadow: 0 0 10px rgba(212,175,55,0.5);
+}
+
+/* Conteúdo diário */
+.daily img {
+    max-width: 200px;
+    border-radius: 10px;
+    margin-top: 10px;
+    box-shadow: 0 0 20px rgba(212,175,55,0.5);
+}
+.daily p { font-size:1.2em; color:#CCC; }
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 20px;
+    border-top: 2px solid #D4AF37;
+    margin-top: 50px;
+}
+
+/* Hero / Página inicial */
+.hero img {
+    max-width: 250px;
+    margin: 10px;
+    border-radius: 10px;
+}
+.hero h2 {
+    font-size:2em;
+    margin:15px 0;
+}
+.hero p {
+    font-size:1.1em;
+    color:#CCC;
+    max-width:600px;
+    margin: 10px auto 30px;
+}
+.buttons a {
+    display:inline-block;
+    background:#D4AF37;
+    color:#0D0D0D;
+    padding:12px 25px;
+    margin:10px;
+    text-decoration:none;
+    border-radius:5px;
+    font-weight:bold;
+    transition:0.3s;
+}
+.buttons a:hover { background:#b9952f; }

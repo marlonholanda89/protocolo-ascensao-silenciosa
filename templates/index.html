@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Protocolo Ascensão Suprema</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        body {
+            background: #0D0D0D;
+            color: #FFFFFF;
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background: #1a1a1a;
+            padding: 20px 10px;
+            text-align: center;
+            border-bottom: 2px solid #D4AF37;
+        }
+        header h1 {
+            font-size: 2.5rem;
+            margin: 0;
+            color: #D4AF37;
+        }
+        header p {
+            font-size: 1.2rem;
+            color: #CCC;
+            margin-top: 5px;
+        }
+        nav {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            padding: 15px 0;
+            background: #111;
+        }
+        nav a {
+            color: #D4AF37;
+            font-weight: bold;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: 0.3s;
+            border: 1px solid #D4AF37;
+        }
+        nav a:hover {
+            background: #D4AF37;
+            color: #0D0D0D;
+        }
+        .hero {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            padding: 50px 20px;
+            gap: 40px;
+        }
+        .hero-text {
+            max-width: 500px;
+            text-align: center;
+        }
+        .hero-text h2 {
+            font-size: 2rem;
+            color: #FFFFFF;
+            margin-bottom: 20px;
+        }
+        .hero-text p {
+            font-size: 1.1rem;
+            color: #CCC;
+            margin-bottom: 30px;
+        }
+        .hero-text .buttons a {
+            display: inline-block;
+            background: #D4AF37;
+            color: #0D0D0D;
+            padding: 12px 25px;
+            margin: 5px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+        .hero-text .buttons a:hover {
+            background: #b9952f;
+        }
+        .hero-images {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+        }
+        .hero-images img {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 2px solid #D4AF37;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .hero-images img:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px #D4AF37;
+        }
+        .motivational {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 1.3rem;
+            color: #D4AF37;
+            font-style: italic;
+        }
+        footer {
+            background: #111;
+            color: #888;
+            text-align: center;
+            padding: 20px;
+            margin-top: 50px;
+        }
+        @media (max-width: 768px) {
+            .hero {
+                flex-direction: column;
+            }
+            .hero-images {
+                order: -1; /* Faz as imagens aparecerem acima do texto no mobile */
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Protocolo Ascensão Suprema</h1>
+    <p>Disciplina silenciosa. Ascensão inevitável.</p>
+</header>
+
+<nav>
+    <a href="/register">Registrar</a>
+    <a href="/login">Login</a>
+    <a href="/planos">Planos</a>
+</nav>
+
+<section class="hero">
+
+    <div class="hero-images">
+        <img src="{{ url_for('static', filename='img/batman1.jpeg') }}" alt="Batman 1">
+        <img src="{{ url_for('static', filename='img/batman2.jpeg') }}" alt="Batman 2">
+        <img src="{{ url_for('static', filename='img/clark1.jpeg') }}" alt="Clark Kent">
+        <img src="{{ url_for('static', filename='img/goku1.jpeg') }}" alt="Goku">
+        <img src="{{ url_for('static', filename='img/vegeta1.jpeg') }}" alt="Vegeta">
+    </div>
+
+    <div class="hero-text">
+        <h2>Transforme sua disciplina e aparência</h2>
+        <p>Inspirado em heróis que evoluem com foco, treinos e disciplina mental. Cada dia é um passo para se tornar a sua melhor versão.</p>
+        <div class="buttons">
+            <a href="/register">Começar Agora</a>
+            <a href="/planos">Ver Planos</a>
+        </div>
+        <div class="motivational">
+            "Disciplina silenciosa. Resultados inevitáveis."<br>
+            "A cada dia você se aproxima da sua versão épica."
+        </div>
+    </div>
+
+</section>
+
+<footer>
+    &copy; 2026 Protocolo Ascensão Suprema. Todos os direitos reservados.
+</footer>
+
+</body>
+</html>
