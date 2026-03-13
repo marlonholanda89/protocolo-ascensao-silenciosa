@@ -151,3 +151,152 @@ footer {
     transition:0.3s;
 }
 .buttons a:hover { background:#b9952f; }
+.card-exercicio{
+
+background:#111;
+padding:30px;
+margin:30px auto;
+max-width:600px;
+border-radius:10px;
+box-shadow:0 0 10px rgba(0,0,0,0.5);
+
+}
+
+.card-exercicio img{
+
+width:100%;
+border-radius:8px;
+margin:15px 0;
+
+}
+
+.card-exercicio h2{
+
+color:#f0c040;
+
+}
+.progress-section{
+    padding:30px;
+}
+
+.progress-bar{
+    width:60%;
+    margin:10px auto;
+    background:#222;
+    height:25px;
+    border-radius:20px;
+    overflow:hidden;
+}
+
+.progress-fill{
+    height:100%;
+    background:#D4AF37;
+}
+.conteudos-grid{
+padding:40px;
+}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+gap:25px;
+max-width:900px;
+margin:auto;
+}
+
+.card-conteudo{
+background:#1a1a1a;
+border-radius:10px;
+overflow:hidden;
+text-align:center;
+transition:0.3s;
+box-shadow:0 0 10px rgba(212,175,55,0.2);
+}
+
+.card-conteudo img{
+width:100%;
+height:140px;
+object-fit:cover;
+}
+
+.card-conteudo h3{
+color:#D4AF37;
+margin:10px 0 5px;
+}
+
+.card-conteudo p{
+color:#CCC;
+margin-bottom:15px;
+}
+
+.card-conteudo:hover{
+transform:scale(1.05);
+box-shadow:0 0 20px rgba(212,175,55,0.7);
+}
+/* streak animado */
+
+.streak-fire{
+
+font-weight:bold;
+animation:fogo 1s infinite alternate;
+
+}
+
+@keyframes fogo{
+
+0%{transform:scale(1);}
+
+100%{transform:scale(1.2);}
+
+}
+
+/* xp animado */
+
+.xp{
+
+font-size:2em;
+color:#D4AF37;
+animation:xpup 1s ease;
+
+}
+
+@keyframes xpup{
+
+0%{
+
+transform:scale(0.8);
+opacity:0;
+
+}
+
+100%{
+
+transform:scale(1);
+opacity:1;
+
+}
+
+}
+
+/* conteúdo bloqueado */
+
+.locked{
+
+display:flex;
+align-items:center;
+justify-content:center;
+background:#222;
+color:#888;
+font-weight:bold;
+font-size:1.2em;
+
+}
+
+/* botão check */
+
+.check-btn{
+
+background:#00c853;
+color:#fff;
+
+}

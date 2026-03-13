@@ -1,20 +1,109 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <title>Conteúdo - APEX</title>
-    <style>
-        body { background:#0D0D0D; color:#FFFFFF; font-family:'Roboto', sans-serif; text-align:center; padding:50px; }
-        ul { list-style:none; line-height:2; }
-    </style>
+
+<meta charset="UTF-8">
+<title>Programa 30 Dias</title>
+
+<style>
+
+body{
+background:#0D0D0D;
+color:white;
+font-family:Arial;
+text-align:center;
+padding:40px;
+}
+
+h1{
+margin-bottom:40px;
+}
+
+.grid{
+
+display:grid;
+grid-template-columns:repeat(5,1fr);
+gap:20px;
+max-width:800px;
+margin:auto;
+
+}
+
+.dia{
+
+padding:20px;
+border-radius:10px;
+font-weight:bold;
+
+}
+
+.liberado{
+
+background:#1a1a1a;
+border:2px solid #D4AF37;
+cursor:pointer;
+
+}
+
+.bloqueado{
+
+background:#111;
+opacity:0.4;
+
+}
+
+.completo{
+
+background:#0f3;
+color:black;
+
+}
+
+a{
+text-decoration:none;
+color:white;
+}
+
+</style>
 </head>
+
 <body>
-    <h1>Conteúdo do plano {{plano}}</h1>
-    <ul>
-        {% for item in conteudo %}
-            <li>{{item}}</li>
-        {% endfor %}
-    </ul>
-    <a href="/dashboard" style="color:#D4AF37;">Voltar ao Dashboard</a>
+
+<h1>PROGRAMA 30 DIAS DE ASCENSÃO</h1>
+
+<div class="grid">
+
+{% for dia in dias %}
+
+{% if dia.status == "liberado" %}
+
+<a href="/dia/{{dia.numero}}">
+<div class="dia liberado">
+🔥 Dia {{dia.numero}}
+</div>
+</a>
+
+{% elif dia.status == "completo" %}
+
+<div class="dia completo">
+✅ Dia {{dia.numero}}
+</div>
+
+{% else %}
+
+<div class="dia bloqueado">
+🔒 Dia {{dia.numero}}
+</div>
+
+{% endif %}
+
+{% endfor %}
+
+</div>
+
+<br><br>
+
+<a href="/dashboard">Voltar</a>
+
 </body>
 </html>

@@ -3,24 +3,56 @@
 <head>
 <meta charset="UTF-8">
 <title>Planos - Protocolo Ascensão Silenciosa</title>
-<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
 <style>
 body { background: #0D0D0D; color: #FFF; font-family: 'Roboto', sans-serif; margin:0; padding:0; }
+
 header { background:#111; padding:25px; text-align:center; border-bottom:2px solid #D4AF37; }
+
 header h1 { color:#D4AF37; margin:0; font-size:2.5rem; }
+
 nav { display:flex; justify-content:center; gap:20px; background:#1a1a1a; padding:15px; }
+
 nav a { color:#D4AF37; font-weight:bold; text-decoration:none; padding:8px 12px; }
+
 nav a:hover { color:#FFF; }
+
 .plans { display:flex; flex-wrap:wrap; justify-content:center; gap:25px; padding:40px 20px; }
-.plan { background:#1a1a1a; border-radius:12px; padding:25px; width:280px; text-align:center; box-shadow:0 0 20px rgba(212,175,55,0.4); transition:transform 0.3s; }
+
+.plan {
+background:#1a1a1a;
+border-radius:12px;
+padding:25px;
+width:280px;
+text-align:center;
+box-shadow:0 0 20px rgba(212,175,55,0.4);
+transition:transform 0.3s;
+}
+
 .plan:hover { transform:translateY(-5px); }
-.plan h2 { color:#D4AF37; margin-bottom:10px; }
-.plan p { color:#CCC; margin-bottom:15px; }
-.plan button { background:#D4AF37; color:#0D0D0D; border:none; padding:12px 20px; border-radius:6px; font-weight:bold; cursor:pointer; transition:0.3s; }
-.plan button:hover { background:#b9952f; }
+
+.plan h2 { color:#D4AF37; }
+
+.plan p { color:#CCC; }
+
+.plan a{
+display:inline-block;
+background:#D4AF37;
+color:#0D0D0D;
+padding:12px 20px;
+border-radius:6px;
+font-weight:bold;
+text-decoration:none;
+}
+
+.plan a:hover{
+background:#b9952f;
+}
+
 footer { text-align:center; padding:20px; border-top:2px solid #D4AF37; margin-top:30px; color:#888; }
 </style>
 </head>
+
 <body>
 
 <header>
@@ -29,46 +61,36 @@ footer { text-align:center; padding:20px; border-top:2px solid #D4AF37; margin-t
 
 <nav>
 <a href="/">Home</a>
-<a href="/register">Registrar</a>
-<a href="/login">Login</a>
+<a href="/dashboard">Dashboard</a>
 </nav>
 
 <section class="plans">
 
 <div class="plan">
 <h2>PROJETO APEX</h2>
-<p>Plano básico para iniciantes. Comece a disciplina silenciosa e treinos diários.</p>
+<p>Plano básico para iniciantes.</p>
 <p><strong>R$10/mês</strong></p>
-<form method="POST" action="/pagamento">
-<input type="hidden" name="plano" value="Básico">
-<button type="submit">Escolher Plano</button>
-</form>
+<a href="/checkout/Projeto Apex">Escolher Plano</a>
 </div>
 
 <div class="plan">
 <h2>CÓDIGO ASCENSÃO</h2>
-<p>Plano intermediário. Treinos mais avançados, conteúdo mental e streaks.</p>
+<p>Plano intermediário.</p>
 <p><strong>R$49,90/mês</strong></p>
-<form method="POST" action="/pagamento">
-<input type="hidden" name="plano" value="Intermediário">
-<button type="submit">Escolher Plano</button>
-</form>
+<a href="/checkout/Código Ascensão">Escolher Plano</a>
 </div>
 
 <div class="plan">
 <h2>PROTOCOLO VÉRTICE</h2>
-<p>Plano ultimate. Conteúdo Premium completo: treinos, rosto, mental e motivação diária.</p>
+<p>Plano Premium completo.</p>
 <p><strong>R$99,90/mês</strong></p>
-<form method="POST" action="/pagamento">
-<input type="hidden" name="plano" value="Premium">
-<button type="submit">Escolher Plano</button>
-</form>
+<a href="/checkout/Protocolo Vértice">Escolher Plano</a>
 </div>
 
 </section>
 
 <footer>
-&copy; 2026 Protocolo Ascensão Silenciosa. Todos os direitos reservados.
+&copy; 2026 Protocolo Ascensão Silenciosa
 </footer>
 
 </body>

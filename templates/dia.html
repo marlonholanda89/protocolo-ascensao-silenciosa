@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+
+<meta charset="UTF-8">
+<title>Dia {{numero}}</title>
+
+<style>
+
+body{
+background:#0D0D0D;
+color:white;
+font-family:Arial;
+text-align:center;
+padding:40px;
+}
+
+.container{
+max-width:600px;
+margin:auto;
+}
+
+img{
+width:220px;
+border-radius:10px;
+margin:20px auto;
+display:block;
+}
+
+.card{
+background:#1a1a1a;
+padding:20px;
+border-radius:10px;
+margin-top:20px;
+}
+
+h1{
+color:#D4AF37;
+}
+
+button{
+margin-top:30px;
+padding:15px 40px;
+background:#D4AF37;
+border:none;
+border-radius:8px;
+font-weight:bold;
+cursor:pointer;
+}
+
+.frase{
+font-style:italic;
+margin-top:20px;
+color:#D4AF37;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>DIA {{numero}}</h1>
+
+<h2>{{conteudo.titulo}}</h2>
+
+<img src="{{ url_for('static', filename='img/' + conteudo.imagem) }}">
+
+<div class="card">
+
+<h3>Treino</h3>
+
+<p style="white-space:pre-line;">
+{{conteudo.treino}}
+</p>
+
+</div>
+
+<div class="card">
+
+<h3>Ação Agora</h3>
+
+<p>
+{{conteudo.acao}}
+</p>
+
+</div>
+
+<div class="card">
+
+<h3>Desafio do Dia</h3>
+
+<p>
+{{conteudo.desafio}}
+</p>
+
+</div>
+
+<p class="frase">
+"{{conteudo.frase}}"
+</p>
+
+<a href="/completar_dia">
+
+<button>
+CONCLUIR DIA
+</button>
+
+</a>
+
+</div>
+
+</body>
+</html>

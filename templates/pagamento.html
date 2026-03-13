@@ -1,24 +1,45 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <title>Pagamento - APEX</title>
-    <style>
-        body { background:#0D0D0D; color:#FFFFFF; font-family:'Roboto', sans-serif; text-align:center; padding:50px; }
-        select, button { padding:10px; margin:10px; border-radius:5px; border:none; }
-        button { background:#D4AF37; color:#0D0D0D; font-weight:bold; cursor:pointer; }
-    </style>
-</head>
-<body>
-    <h1>Upgrade de Plano</h1>
-    <form method="POST">
-        <select name="plano" required>
-            <option value="" disabled selected>Escolha seu plano</option>
-            <option value="Intermediário">CÓDIGO ASCENSÃO</option>
-            <option value="Premium">PROTOCOLO VÉRTICE</option>
-        </select><br>
-        <button type="submit">Atualizar Plano</button>
-    </form>
-    <a href="/dashboard" style="color:#D4AF37;">Voltar ao Dashboard</a>
-</body>
+<!DOCTYPE html><html lang="pt-BR">
+<head><meta charset="UTF-8"><title>Upgrade de Plano</title><style>
+
+body{
+background:#0D0D0D;
+color:#FFFFFF;
+font-family:'Roboto', sans-serif;
+text-align:center;
+padding:50px;
+}
+
+.plano{
+display:block;
+width:260px;
+margin:20px auto;
+padding:15px;
+border-radius:8px;
+background:#D4AF37;
+color:#0D0D0D;
+font-weight:bold;
+text-decoration:none;
+transition:0.3s;
+}
+
+.plano:hover{
+background:#b9952f;
+}
+
+.voltar{
+color:#D4AF37;
+text-decoration:none;
+display:block;
+margin-top:40px;
+}
+
+</style></head><body><h1>Escolha seu plano</h1><a class="plano" href="/checkout/Projeto Apex">
+Projeto Apex - R$10/mês
+</a><a class="plano" href="/checkout/Código Ascensão">
+Código Ascensão - R$49,90/mês
+</a><a class="plano" href="/checkout/Protocolo Vértice">
+Protocolo Vértice - R$99,90/mês
+</a><a class="voltar" href="/dashboard">
+Voltar ao Dashboard
+</a></body>
 </html>

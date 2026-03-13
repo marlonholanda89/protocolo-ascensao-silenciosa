@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+
+<meta charset="UTF-8">
+<title>Ranking Global</title>
+
+<style>
+
+body{
+background:#0D0D0D;
+color:white;
+font-family:Arial;
+text-align:center;
+padding:40px;
+}
+
+table{
+margin:auto;
+border-collapse:collapse;
+width:500px;
+}
+
+th,td{
+padding:12px;
+border-bottom:1px solid #333;
+}
+
+th{
+color:#D4AF37;
+}
+
+tr:hover{
+background:#1a1a1a;
+}
+
+.top{
+color:#FFD700;
+font-weight:bold;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1 style="color:#D4AF37">
+🏆 Ranking Global
+</h1>
+
+<table>
+
+<tr>
+<th>#</th>
+<th>Nome</th>
+<th>Pontos</th>
+<th>Streak</th>
+</tr>
+
+{% for u in usuarios %}
+
+<tr>
+
+<td class="{% if loop.index <= 3 %}top{% endif %}">
+{{loop.index}}
+</td>
+
+<td>{{u.nome}}</td>
+<td>{{u.pontos}}</td>
+<td>🔥 {{u.streak}}</td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+<br><br>
+
+<a href="/dashboard" style="color:#D4AF37">
+Voltar
+</a>
+
+</body>
+</html>
