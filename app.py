@@ -7,28 +7,33 @@ import os
 app = Flask(__name__)
 app.secret_key = "supersegredo"
 
-# TOKEN MERCADO PAGO
-sdk = mercadopago.SDK("APP_USR-381894924064611-031313-091ca1eb5675ebfd0160c563529eef4c-3265389760")
+# TOKEN MERCADO PAGO (variável de ambiente)
+ACCESS_TOKEN = os.getenv("MP_ACCESS_TOKEN")
+sdk = mercadopago.SDK(ACCESS_TOKEN)
 
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///usuarios.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db = SQLAlchemy(app)
 
+
 class Usuario(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nome = db.Column(db.String(100))
     email = db.Column(db.String(100), unique=True)
     senha = db.Column(db.String(100))
-    plano = db.Column(db.String(50))
+    plano = db.Column(db.String(50), default="Gratis")
     pontos = db.Column(db.Integer, default=0)
     streak = db.Column(db.Integer, default=0)
+
 
 with app.app_context():
     db.create_all()
 
+
 nome_plataforma = "Protocolo Ascensão Silenciosa"
 dias_programa = 30
+
 
 acoes = [
 "Coloque gelo no rosto por 20 segundos.",
@@ -41,6 +46,7 @@ acoes = [
 "Olhe para frente e respire fundo 20 vezes."
 ]
 
+
 frases = [
 "A disciplina vence o talento.",
 "Homens fortes fazem o que precisa ser feito.",
@@ -49,6 +55,7 @@ frases = [
 "A dor de hoje é a força de amanhã.",
 "Grandes homens são construídos em silêncio."
 ]
+
 
 conteudos = {
 1:{
@@ -85,9 +92,11 @@ conteudos = {
 }
 }
 
+
 @app.route("/")
 def index():
     return render_template("index.html", nome_plataforma=nome_plataforma)
+
 
 @app.route("/register", methods=["GET","POST"])
 def register():
@@ -97,7 +106,6 @@ def register():
         nome = request.form.get("nome")
         email = request.form.get("email")
         senha = request.form.get("senha")
-        plano = request.form.get("plano")
 
         usuario_existente = Usuario.query.filter_by(email=email).first()
 
@@ -107,10 +115,7 @@ def register():
         novo_usuario = Usuario(
             nome=nome,
             email=email,
-            senha=senha,
-            plano=plano,
-            pontos=0,
-            streak=0
+            senha=senha
         )
 
         db.session.add(novo_usuario)
@@ -119,6 +124,7 @@ def register():
         return redirect(url_for("login"))
 
     return render_template("register.html")
+
 
 @app.route("/login", methods=["GET","POST"])
 def login():
@@ -138,6 +144,7 @@ def login():
 
     return render_template("login.html")
 
+
 @app.route("/dashboard")
 def dashboard():
 
@@ -156,10 +163,12 @@ def dashboard():
         streak=usuario.streak
     )
 
+
 @app.route("/ranking")
 def ranking():
     usuarios = Usuario.query.order_by(Usuario.pontos.desc()).all()
     return render_template("ranking.html", usuarios=usuarios)
+
 
 @app.route("/conteudo")
 def conteudo():
@@ -170,6 +179,10 @@ def conteudo():
         return redirect(url_for("login"))
 
     usuario = Usuario.query.filter_by(email=email).first()
+
+    if usuario.plano == "Gratis":
+        return redirect(url_for("planos"))
+
     progresso_usuario = usuario.streak
 
     dias = []
@@ -190,6 +203,7 @@ def conteudo():
 
     return render_template("conteudo.html", dias=dias)
 
+
 @app.route("/dia/<int:numero>")
 def dia(numero):
 
@@ -199,6 +213,10 @@ def dia(numero):
         return redirect(url_for("login"))
 
     usuario = Usuario.query.filter_by(email=email).first()
+
+    if usuario.plano == "Gratis":
+        return redirect(url_for("planos"))
+
     progresso_usuario = usuario.streak
 
     if numero > progresso_usuario + 1:
@@ -218,6 +236,7 @@ def dia(numero):
 
     return render_template("dia.html", numero=numero, conteudo=conteudo)
 
+
 @app.route("/completar_dia")
 def completar_dia():
 
@@ -235,11 +254,12 @@ def completar_dia():
 
     return redirect(url_for("dashboard"))
 
+
 @app.route("/planos")
 def planos():
     return render_template("planos.html")
 
-# CHECKOUT MERCADO PAGO
+
 @app.route("/checkout/<plano>")
 def checkout(plano):
 
@@ -249,29 +269,43 @@ def checkout(plano):
         "Protocolo Vértice": 99.90
     }
 
-    base_url = request.host_url
+    email = session.get("email")
 
-    preference_data = {
-        "items": [
-            {
-                "title": plano,
-                "quantity": 1,
-                "currency_id": "BRL",
-                "unit_price": precos[plano]
-            }
-        ],
-        "back_urls": {
-            "success": base_url + "dashboard",
-            "failure": base_url + "planos",
-            "pending": base_url + "planos"
-        },
-        "auto_return": "approved"
-    }
+    if not email:
+        return redirect(url_for("login"))
+
+    usuario = Usuario.query.filter_by(email=email).first()
+
+   preference_data = {
+    "items": [
+        {
+            "title": plano,
+            "quantity": 1,
+            "currency_id": "BRL",
+            "unit_price": precos[plano]
+        }
+    ],
+    "payer": {
+        "email": usuario.email
+    },
+    "payment_methods": {
+        "excluded_payment_types": [],
+        "installments": 12
+    },
+    "notification_url": request.host_url + "webhook",
+    "back_urls": {
+        "success": request.host_url + "dashboard",
+        "failure": request.host_url + "planos",
+        "pending": request.host_url + "planos"
+    },
+    "auto_return": "approved"
+}
 
     preference_response = sdk.preference().create(preference_data)
     preference = preference_response["response"]
 
     return redirect(preference["init_point"])
+
 
 @app.route("/webhook", methods=["POST"])
 def webhook():
@@ -287,10 +321,10 @@ def webhook():
 
         if payment["status"] == "approved":
 
+            email = payment["payer"]["email"]
             plano = payment["additional_info"]["items"][0]["title"]
 
-            # Exemplo simples: liberar plano para todos que ainda não tem
-            usuario = Usuario.query.filter_by(plano=None).first()
+            usuario = Usuario.query.filter_by(email=email).first()
 
             if usuario:
                 usuario.plano = plano
@@ -298,10 +332,12 @@ def webhook():
 
     return "ok"
 
+
 @app.route("/logout")
 def logout():
     session.pop("email",None)
     return redirect(url_for("index"))
+
 
 if __name__ == "__main__":
     app.run(debug=True)
