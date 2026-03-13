@@ -1,4 +1,4 @@
 Flask
 Flask-SQLAlchemy
-mercadopago
+mercadopago==2.3.0
 gunicorn
