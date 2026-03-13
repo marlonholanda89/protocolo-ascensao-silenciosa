@@ -2,11 +2,12 @@ from flask import Flask, render_template, request, redirect, url_for, session
 from flask_sqlalchemy import SQLAlchemy
 import random
 import mercadopago
+import os
 
 app = Flask(__name__)
 app.secret_key = "supersegredo"
 
-# TOKEN DO MERCADO PAGO
+# TOKEN MERCADO PAGO
 sdk = mercadopago.SDK("APP_USR-381894924064611-031313-091ca1eb5675ebfd0160c563529eef4c-3265389760")
 
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///usuarios.db"
@@ -50,7 +51,6 @@ frases = [
 ]
 
 conteudos = {
-
 1:{
 "titulo":"Disciplina Inicial",
 "imagem":"vegeta1.jpeg",
@@ -59,7 +59,6 @@ conteudos = {
 "desafio":"Fique 2 horas sem redes sociais.",
 "frase":"Disciplina é fazer o que precisa ser feito mesmo quando você não quer."
 },
-
 2:{
 "titulo":"Controle Mental",
 "imagem":"goku1.jpeg",
@@ -68,7 +67,6 @@ conteudos = {
 "desafio":"Gelo no rosto 1 min.",
 "frase":"A mente controla o corpo. Domine sua mente."
 },
-
 3:{
 "titulo":"Foco Absoluto",
 "imagem":"goku1.jpeg",
@@ -77,7 +75,6 @@ conteudos = {
 "desafio":"1 hora sem celular.",
 "frase":"Homens comuns se distraem. Homens fortes se concentram."
 },
-
 4:{
 "titulo":"Rotina de Guerra",
 "imagem":"goku1.jpeg",
@@ -86,7 +83,6 @@ conteudos = {
 "desafio":"Banho gelado de 5 minuto.",
 "frase":"A disciplina diária constrói guerreiros."
 }
-
 }
 
 @app.route("/")
@@ -162,9 +158,7 @@ def dashboard():
 
 @app.route("/ranking")
 def ranking():
-
     usuarios = Usuario.query.order_by(Usuario.pontos.desc()).all()
-
     return render_template("ranking.html", usuarios=usuarios)
 
 @app.route("/conteudo")
@@ -255,6 +249,8 @@ def checkout(plano):
         "Protocolo Vértice": 99.90
     }
 
+    base_url = request.host_url
+
     preference_data = {
         "items": [
             {
@@ -265,9 +261,9 @@ def checkout(plano):
             }
         ],
         "back_urls": {
-            "success": "http://127.0.0.1:5000/dashboard",
-            "failure": "http://127.0.0.1:5000/planos",
-            "pending": "http://127.0.0.1:5000/planos"
+            "success": base_url + "dashboard",
+            "failure": base_url + "planos",
+            "pending": base_url + "planos"
         },
         "auto_return": "approved"
     }
@@ -277,16 +273,12 @@ def checkout(plano):
 
     return redirect(preference["init_point"])
 
-@app.route("/logout")
-def logout():
-    session.pop("email",None)
-    return redirect(url_for("index"))
 @app.route("/webhook", methods=["POST"])
 def webhook():
 
     data = request.json
 
-    if data["type"] == "payment":
+    if data and data.get("type") == "payment":
 
         payment_id = data["data"]["id"]
 
@@ -297,18 +289,19 @@ def webhook():
 
             plano = payment["additional_info"]["items"][0]["title"]
 
-            # aqui você poderia buscar o usuário pelo email
-            # mas vamos liberar para o usuário logado
+            # Exemplo simples: liberar plano para todos que ainda não tem
+            usuario = Usuario.query.filter_by(plano=None).first()
 
-            email = session.get("email")
-
-            if email:
-                usuario = Usuario.query.filter_by(email=email).first()
-
-                if usuario:
-                    usuario.plano = plano
-                    db.session.commit()
+            if usuario:
+                usuario.plano = plano
+                db.session.commit()
 
     return "ok"
+
+@app.route("/logout")
+def logout():
+    session.pop("email",None)
+    return redirect(url_for("index"))
+
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(debug=True)
