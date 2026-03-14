@@ -35,19 +35,20 @@ nome_plataforma = "Protocolo Ascensão Silenciosa"
 dias_programa = 30
 
 
+# SISTEMA DE NÍVEL MELHORADO
 def calcular_nivel(pontos):
 
-    if pontos >= 200:
-        return "Ascendido"
+    niveis = [
+        (350,"Ascendido"),
+        (200,"Elite"),
+        (120,"Guerreiro"),
+        (50,"Discípulo"),
+        (0,"Iniciado")
+    ]
 
-    elif pontos >= 100:
-        return "Guerreiro"
-
-    elif pontos >= 50:
-        return "Discípulo"
-
-    else:
-        return "Iniciado"
+    for limite,nome in niveis:
+        if pontos >= limite:
+            return nome
 
 
 acoes = [
@@ -127,11 +128,7 @@ def register():
         if usuario_existente:
             return render_template("register.html", error="Email já cadastrado")
 
-        novo_usuario = Usuario(
-            nome=nome,
-            email=email,
-            senha=senha
-        )
+        novo_usuario = Usuario(nome=nome,email=email,senha=senha)
 
         db.session.add(novo_usuario)
         db.session.commit()
@@ -182,10 +179,26 @@ def dashboard():
     )
 
 
+# RANKING MELHORADO
 @app.route("/ranking")
 def ranking():
-    usuarios = Usuario.query.order_by(Usuario.pontos.desc()).all()
-    return render_template("ranking.html", usuarios=usuarios)
+
+    usuarios = Usuario.query.order_by(
+        Usuario.pontos.desc()
+    ).limit(10).all()
+
+    email = session.get("email")
+    usuario = Usuario.query.filter_by(email=email).first()
+
+    posicao = Usuario.query.filter(
+        Usuario.pontos > usuario.pontos
+    ).count() + 1
+
+    return render_template(
+        "ranking.html",
+        usuarios=usuarios,
+        posicao=posicao
+    )
 
 
 @app.route("/conteudo")
@@ -198,14 +211,21 @@ def conteudo():
 
     usuario = Usuario.query.filter_by(email=email).first()
 
-    if usuario.plano == "Gratis":
-        return redirect(url_for("planos"))
+    # LIMITE DE CONTEÚDO POR PLANO
+    limites = {
+        "Gratis":3,
+        "Projeto Apex":10,
+        "Código Ascensão":20,
+        "Protocolo Vértice":30
+    }
+
+    limite = limites.get(usuario.plano,3)
 
     progresso_usuario = usuario.streak
 
     dias = []
 
-    for i in range(1, dias_programa+1):
+    for i in range(1, limite+1):
 
         if i <= progresso_usuario:
             status = "completo"
@@ -214,10 +234,7 @@ def conteudo():
         else:
             status = "bloqueado"
 
-        dias.append({
-            "numero":i,
-            "status":status
-        })
+        dias.append({"numero":i,"status":status})
 
     return render_template("conteudo.html", dias=dias)
 
@@ -231,9 +248,6 @@ def dia(numero):
         return redirect(url_for("login"))
 
     usuario = Usuario.query.filter_by(email=email).first()
-
-    if usuario.plano == "Gratis":
-        return redirect(url_for("planos"))
 
     progresso_usuario = usuario.streak
 
@@ -265,7 +279,10 @@ def completar_dia():
 
     usuario = Usuario.query.filter_by(email=email).first()
 
-    usuario.pontos += 10
+    # XP ALEATÓRIO
+    xp = random.randint(10,20)
+
+    usuario.pontos += xp
     usuario.streak += 1
 
     db.session.commit()
