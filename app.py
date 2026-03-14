@@ -211,15 +211,18 @@ def conteudo():
 
     usuario = Usuario.query.filter_by(email=email).first()
 
+    # BLOQUEIA USUÁRIO GRÁTIS
+    if usuario.plano == "Gratis":
+        return redirect(url_for("planos"))
+
     # LIMITE DE CONTEÚDO POR PLANO
     limites = {
-        "Gratis":3,
         "Projeto Apex":10,
         "Código Ascensão":20,
         "Protocolo Vértice":30
     }
 
-    limite = limites.get(usuario.plano,3)
+    limite = limites.get(usuario.plano,0)
 
     progresso_usuario = usuario.streak
 
@@ -229,12 +232,17 @@ def conteudo():
 
         if i <= progresso_usuario:
             status = "completo"
+
         elif i == progresso_usuario + 1:
             status = "liberado"
+
         else:
             status = "bloqueado"
 
-        dias.append({"numero":i,"status":status})
+        dias.append({
+            "numero": i,
+            "status": status
+        })
 
     return render_template("conteudo.html", dias=dias)
 
