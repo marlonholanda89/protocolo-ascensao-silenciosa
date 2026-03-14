@@ -33,6 +33,19 @@ with app.app_context():
 
 nome_plataforma = "Protocolo Ascensão Silenciosa"
 dias_programa = 30
+def calcular_nivel(pontos):
+
+    if pontos >= 200:
+        return "Ascendido"
+
+    elif pontos >= 100:
+        return "Guerreiro"
+
+    elif pontos >= 50:
+        return "Discípulo"
+
+    else:
+        return "Iniciado"
 
 
 acoes = [
@@ -155,12 +168,15 @@ def dashboard():
 
     usuario = Usuario.query.filter_by(email=email).first()
 
+    nivel = calcular_nivel(usuario.pontos)
+
     return render_template(
         "dashboard.html",
         nome=usuario.nome,
         plano=usuario.plano,
         pontos=usuario.pontos,
-        streak=usuario.streak
+        streak=usuario.streak,
+        nivel=nivel
     )
 
 
