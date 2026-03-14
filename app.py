@@ -7,7 +7,7 @@ import os
 app = Flask(__name__)
 app.secret_key = "supersegredo"
 
-# TOKEN MERCADO PAGO (variável de ambiente)
+# TOKEN MERCADO PAGO
 ACCESS_TOKEN = os.getenv("MP_ACCESS_TOKEN")
 sdk = mercadopago.SDK(ACCESS_TOKEN)
 
@@ -33,6 +33,8 @@ with app.app_context():
 
 nome_plataforma = "Protocolo Ascensão Silenciosa"
 dias_programa = 30
+
+
 def calcular_nivel(pontos):
 
     if pontos >= 200:
@@ -292,30 +294,30 @@ def checkout(plano):
 
     usuario = Usuario.query.filter_by(email=email).first()
 
-   preference_data = {
-    "items": [
-        {
-            "title": plano,
-            "quantity": 1,
-            "currency_id": "BRL",
-            "unit_price": precos[plano]
-        }
-    ],
-    "payer": {
-        "email": usuario.email
-    },
-    "payment_methods": {
-        "excluded_payment_types": [],
-        "installments": 12
-    },
-    "notification_url": request.host_url + "webhook",
-    "back_urls": {
-        "success": request.host_url + "dashboard",
-        "failure": request.host_url + "planos",
-        "pending": request.host_url + "planos"
-    },
-    "auto_return": "approved"
-}
+    preference_data = {
+        "items": [
+            {
+                "title": plano,
+                "quantity": 1,
+                "currency_id": "BRL",
+                "unit_price": precos[plano]
+            }
+        ],
+        "payer": {
+            "email": usuario.email
+        },
+        "payment_methods": {
+            "excluded_payment_types": [],
+            "installments": 12
+        },
+        "notification_url": request.host_url + "webhook",
+        "back_urls": {
+            "success": request.host_url + "dashboard",
+            "failure": request.host_url + "planos",
+            "pending": request.host_url + "planos"
+        },
+        "auto_return": "approved"
+    }
 
     preference_response = sdk.preference().create(preference_data)
     preference = preference_response["response"]
