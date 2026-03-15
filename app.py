@@ -7,7 +7,6 @@ import os
 app = Flask(__name__)
 app.secret_key = "supersegredo"
 
-# TOKEN MERCADO PAGO
 ACCESS_TOKEN = os.getenv("MP_ACCESS_TOKEN")
 sdk = mercadopago.SDK(ACCESS_TOKEN)
 
@@ -18,12 +17,19 @@ db = SQLAlchemy(app)
 
 
 class Usuario(db.Model):
+
     id = db.Column(db.Integer, primary_key=True)
+
     nome = db.Column(db.String(100))
+
     email = db.Column(db.String(100), unique=True)
+
     senha = db.Column(db.String(100))
+
     plano = db.Column(db.String(50), default="Gratis")
+
     pontos = db.Column(db.Integer, default=0)
+
     streak = db.Column(db.Integer, default=0)
 
 
@@ -32,18 +38,20 @@ with app.app_context():
 
 
 nome_plataforma = "Protocolo Ascensão Silenciosa"
+
 dias_programa = 30
 
 
-# SISTEMA DE NÍVEL MELHORADO
 def calcular_nivel(pontos):
 
     niveis = [
+
         (350,"Ascendido"),
         (200,"Elite"),
         (120,"Guerreiro"),
         (50,"Discípulo"),
         (0,"Iniciado")
+
     ]
 
     for limite,nome in niveis:
@@ -51,61 +59,118 @@ def calcular_nivel(pontos):
             return nome
 
 
-acoes = [
-"Coloque gelo no rosto por 20 segundos.",
-"Lave o rosto com água gelada.",
-"Beba um copo grande de água agora.",
-"Respire profundamente por 1 minuto.",
-"Molhe o rosto com água fria.",
-"Fique 10 minutos sem celular.",
-"Faça 30 segundos de respiração profunda.",
-"Olhe para frente e respire fundo 20 vezes."
-]
-
+# FRASES
 
 frases = [
+
 "A disciplina vence o talento.",
+
 "Homens fortes fazem o que precisa ser feito.",
+
 "Controle sua mente ou ela controla você.",
+
 "Pequenas vitórias diárias criam grandes homens.",
+
 "A dor de hoje é a força de amanhã.",
+
 "Grandes homens são construídos em silêncio."
+
 ]
 
 
-conteudos = {
-1:{
-"titulo":"Disciplina Inicial",
-"imagem":"vegeta1.jpeg",
-"treino":"10 flexões\n15 agachamentos\n20 segundos prancha\nRepetir 3 vezes",
-"acao":"Lave o rosto com água gelada agora.",
-"desafio":"Fique 2 horas sem redes sociais.",
-"frase":"Disciplina é fazer o que precisa ser feito mesmo quando você não quer."
-},
-2:{
-"titulo":"Controle Mental",
-"imagem":"goku1.jpeg",
-"treino":"12 flexões\n20 agachamentos\n30 segundos prancha\nRepetir 3 vezes",
-"acao":"Respire profundamente por 30 segundos.",
-"desafio":"Gelo no rosto 1 min.",
-"frase":"A mente controla o corpo. Domine sua mente."
-},
-3:{
-"titulo":"Foco Absoluto",
-"imagem":"goku1.jpeg",
-"treino":"15 flexões\n25 agachamentos\n30 segundos prancha\nRepetir 3 vezes",
-"acao":"Coloque gelo no rosto por 20 segundos.",
-"desafio":"1 hora sem celular.",
-"frase":"Homens comuns se distraem. Homens fortes se concentram."
-},
-4:{
-"titulo":"Rotina de Guerra",
-"imagem":"goku1.jpeg",
-"treino":"20 flexões\n30 agachamentos\n40 segundos prancha\nRepetir 3 vezes",
-"acao":"Beba um copo grande de água agora.",
-"desafio":"Banho gelado de 5 minuto.",
-"frase":"A disciplina diária constrói guerreiros."
-}
+# DESAFIOS
+
+desafios = [
+
+"Banho gelado hoje.",
+
+"Fique 2 horas sem redes sociais.",
+
+"Faça 10 minutos de leitura.",
+
+"Fique 1 hora sem celular.",
+
+"Sem açúcar hoje.",
+
+"Acorde 30 minutos mais cedo."
+
+]
+
+
+# AÇÕES RÁPIDAS
+
+acoes = [
+
+"Lave o rosto com água gelada.",
+
+"Beba um copo grande de água.",
+
+"Respire profundamente por 1 minuto.",
+
+"Coloque gelo no rosto por 20 segundos.",
+
+"Molhe o rosto com água fria."
+
+]
+
+
+# ALONGAMENTO
+
+alongamentos = [
+
+"Alongue pernas por 30 segundos.",
+
+"Alongue braços por 30 segundos.",
+
+"Alongue coluna por 30 segundos.",
+
+"Respire fundo e alongue o pescoço."
+
+]
+
+
+# TREINOS POR PLANO
+
+treinos_planos = {
+
+"Projeto Apex":
+
+"""
+
+10 flexões  
+15 agachamentos  
+20s prancha  
+Repetir 3x
+
+""",
+
+
+"Código Ascensão":
+
+"""
+
+20 flexões  
+25 agachamentos  
+30s prancha  
+15 abdominais  
+Repetir 3x
+
+""",
+
+
+"Protocolo Vértice":
+
+"""
+
+30 flexões  
+40 agachamentos  
+40s prancha  
+25 abdominais  
+20 burpees  
+Repetir 4x
+
+"""
+
 }
 
 
@@ -120,7 +185,9 @@ def register():
     if request.method == "POST":
 
         nome = request.form.get("nome")
+
         email = request.form.get("email")
+
         senha = request.form.get("senha")
 
         usuario_existente = Usuario.query.filter_by(email=email).first()
@@ -131,6 +198,7 @@ def register():
         novo_usuario = Usuario(nome=nome,email=email,senha=senha)
 
         db.session.add(novo_usuario)
+
         db.session.commit()
 
         return redirect(url_for("login"))
@@ -144,12 +212,15 @@ def login():
     if request.method == "POST":
 
         email = request.form.get("email")
+
         senha = request.form.get("senha")
 
         usuario = Usuario.query.filter_by(email=email).first()
 
         if usuario and usuario.senha == senha:
+
             session["email"] = usuario.email
+
             return redirect(url_for("dashboard"))
 
         return render_template("login.html", error="Email ou senha incorretos")
@@ -170,34 +241,19 @@ def dashboard():
     nivel = calcular_nivel(usuario.pontos)
 
     return render_template(
+
         "dashboard.html",
+
         nome=usuario.nome,
+
         plano=usuario.plano,
+
         pontos=usuario.pontos,
+
         streak=usuario.streak,
+
         nivel=nivel
-    )
 
-
-# RANKING MELHORADO
-@app.route("/ranking")
-def ranking():
-
-    usuarios = Usuario.query.order_by(
-        Usuario.pontos.desc()
-    ).limit(10).all()
-
-    email = session.get("email")
-    usuario = Usuario.query.filter_by(email=email).first()
-
-    posicao = Usuario.query.filter(
-        Usuario.pontos > usuario.pontos
-    ).count() + 1
-
-    return render_template(
-        "ranking.html",
-        usuarios=usuarios,
-        posicao=posicao
     )
 
 
@@ -211,15 +267,17 @@ def conteudo():
 
     usuario = Usuario.query.filter_by(email=email).first()
 
-    # BLOQUEIA USUÁRIO GRÁTIS
     if usuario.plano == "Gratis":
         return redirect(url_for("planos"))
 
-    # LIMITE DE CONTEÚDO POR PLANO
     limites = {
+
         "Projeto Apex":10,
+
         "Código Ascensão":20,
+
         "Protocolo Vértice":30
+
     }
 
     limite = limites.get(usuario.plano,0)
@@ -240,8 +298,11 @@ def conteudo():
             status = "bloqueado"
 
         dias.append({
+
             "numero": i,
+
             "status": status
+
         })
 
     return render_template("conteudo.html", dias=dias)
@@ -262,17 +323,25 @@ def dia(numero):
     if numero > progresso_usuario + 1:
         return redirect(url_for("conteudo"))
 
-    conteudo = conteudos.get(numero)
+    treino = treinos_planos.get(usuario.plano)
 
-    if conteudo is None:
-        conteudo = {
-        "titulo":"Treinamento de Ascensão",
-        "imagem":"vegeta1.jpeg",
-        "treino":"20 flexões\n30 agachamentos\n40 segundos prancha\nRepetir 3 vezes",
-        "acao": random.choice(acoes),
-        "desafio":"Banho gelado de 1 minuto hoje.",
-        "frase": random.choice(frases)
-        }
+    conteudo = {
+
+    "titulo":"Treinamento do Dia",
+
+    "imagem":"goku1.jpeg",
+
+    "treino":treino,
+
+    "acao": random.choice(acoes),
+
+    "desafio": random.choice(desafios),
+
+    "alongamento": random.choice(alongamentos),
+
+    "frase": random.choice(frases)
+
+    }
 
     return render_template("dia.html", numero=numero, conteudo=conteudo)
 
@@ -287,10 +356,10 @@ def completar_dia():
 
     usuario = Usuario.query.filter_by(email=email).first()
 
-    # XP ALEATÓRIO
     xp = random.randint(10,20)
 
     usuario.pontos += xp
+
     usuario.streak += 1
 
     db.session.commit()
@@ -301,79 +370,6 @@ def completar_dia():
 @app.route("/planos")
 def planos():
     return render_template("planos.html")
-
-
-@app.route("/checkout/<plano>")
-def checkout(plano):
-
-    precos = {
-        "Projeto Apex": 10,
-        "Código Ascensão": 49.90,
-        "Protocolo Vértice": 99.90
-    }
-
-    email = session.get("email")
-
-    if not email:
-        return redirect(url_for("login"))
-
-    usuario = Usuario.query.filter_by(email=email).first()
-
-    preference_data = {
-        "items": [
-            {
-                "title": plano,
-                "quantity": 1,
-                "currency_id": "BRL",
-                "unit_price": precos[plano]
-            }
-        ],
-        "payer": {
-            "email": usuario.email
-        },
-        "payment_methods": {
-            "excluded_payment_types": [],
-            "installments": 12
-        },
-        "notification_url": request.host_url + "webhook",
-        "back_urls": {
-            "success": request.host_url + "dashboard",
-            "failure": request.host_url + "planos",
-            "pending": request.host_url + "planos"
-        },
-        "auto_return": "approved"
-    }
-
-    preference_response = sdk.preference().create(preference_data)
-    preference = preference_response["response"]
-
-    return redirect(preference["init_point"])
-
-
-@app.route("/webhook", methods=["POST"])
-def webhook():
-
-    data = request.json
-
-    if data and data.get("type") == "payment":
-
-        payment_id = data["data"]["id"]
-
-        payment_info = sdk.payment().get(payment_id)
-        payment = payment_info["response"]
-
-        if payment["status"] == "approved":
-
-            email = payment["payer"]["email"]
-            plano = payment["additional_info"]["items"][0]["title"]
-
-            usuario = Usuario.query.filter_by(email=email).first()
-
-            if usuario:
-                usuario.plano = plano
-                db.session.commit()
-
-    return "ok"
 
 
 @app.route("/logout")

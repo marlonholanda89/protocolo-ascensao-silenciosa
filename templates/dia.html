@@ -3,58 +3,12 @@
 <head>
 
 <meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Dia {{numero}}</title>
 
-<style>
-
-body{
-background:#0D0D0D;
-color:white;
-font-family:Arial;
-text-align:center;
-padding:40px;
-}
-
-.container{
-max-width:600px;
-margin:auto;
-}
-
-img{
-width:220px;
-border-radius:10px;
-margin:20px auto;
-display:block;
-}
-
-.card{
-background:#1a1a1a;
-padding:20px;
-border-radius:10px;
-margin-top:20px;
-}
-
-h1{
-color:#D4AF37;
-}
-
-button{
-margin-top:30px;
-padding:15px 40px;
-background:#D4AF37;
-border:none;
-border-radius:8px;
-font-weight:bold;
-cursor:pointer;
-}
-
-.frase{
-font-style:italic;
-margin-top:20px;
-color:#D4AF37;
-}
-
-</style>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 
 </head>
 
@@ -90,6 +44,16 @@ color:#D4AF37;
 
 <div class="card">
 
+<h3>Alongamento</h3>
+
+<p>
+{{conteudo.alongamento}}
+</p>
+
+</div>
+
+<div class="card">
+
 <h3>Desafio do Dia</h3>
 
 <p>
@@ -99,13 +63,17 @@ color:#D4AF37;
 </div>
 
 <p class="frase">
+
 "{{conteudo.frase}}"
+
 </p>
 
 <a href="/completar_dia">
 
 <button>
+
 CONCLUIR DIA
+
 </button>
 
 </a>
