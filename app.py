@@ -14,6 +14,9 @@ sdk = mercadopago.SDK(ACCESS_TOKEN)
 DATABASE_URL = os.getenv("DATABASE_URL")
 
 if DATABASE_URL:
+    if DATABASE_URL.startswith("postgres://"):
+        DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+
     app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URL
 else:
     BASE_DIR = os.path.abspath(os.path.dirname(__file__))
