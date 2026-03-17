@@ -21,7 +21,7 @@ if DATABASE_URL:
     if DATABASE_URL.startswith("postgres://"):
         DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 
-    app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URL + "?sslmode=require"
+    app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URL
 else:
     BASE_DIR = os.path.abspath(os.path.dirname(__file__))
     db_path = os.path.join(BASE_DIR, "usuarios.db")
