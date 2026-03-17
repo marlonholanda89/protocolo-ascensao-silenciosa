@@ -5,11 +5,15 @@ import mercadopago
 import os
 
 app = Flask(__name__)
-app.secret_key = "supersegredo"
+app.secret_key = os.getenv("SECRET_KEY", "supersegredo")
 
 # TOKEN MERCADO PAGO
 ACCESS_TOKEN = os.getenv("MP_ACCESS_TOKEN")
-sdk = mercadopago.SDK(ACCESS_TOKEN)
+
+if ACCESS_TOKEN:
+    sdk = mercadopago.SDK(ACCESS_TOKEN)
+else:
+    sdk = None
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 
@@ -22,6 +26,7 @@ else:
     BASE_DIR = os.path.abspath(os.path.dirname(__file__))
     db_path = os.path.join(BASE_DIR, "usuarios.db")
     app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{db_path}"
+
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db = SQLAlchemy(app)
@@ -37,15 +42,16 @@ class Usuario(db.Model):
     streak = db.Column(db.Integer, default=0)
 
 
+# ✅ CORREÇÃO AQUI
 with app.app_context():
-    db.create_all()
+    if not DATABASE_URL:
+        db.create_all()
 
 
 nome_plataforma = "Protocolo Ascensão Silenciosa"
 dias_programa = 30
 
 
-# SISTEMA DE NÍVEL MELHORADO
 def calcular_nivel(pontos):
 
     niveis = [
@@ -189,7 +195,6 @@ def dashboard():
     )
 
 
-# RANKING MELHORADO
 @app.route("/ranking")
 def ranking():
 
@@ -221,11 +226,9 @@ def conteudo():
 
     usuario = Usuario.query.filter_by(email=email).first()
 
-    # BLOQUEIA USUÁRIO GRÁTIS
     if usuario.plano == "Gratis":
         return redirect(url_for("planos"))
 
-    # LIMITE DE CONTEÚDO POR PLANO
     limites = {
         "Projeto Apex":10,
         "Código Ascensão":20,
@@ -242,10 +245,8 @@ def conteudo():
 
         if i <= progresso_usuario:
             status = "completo"
-
         elif i == progresso_usuario + 1:
             status = "liberado"
-
         else:
             status = "bloqueado"
 
@@ -297,7 +298,6 @@ def completar_dia():
 
     usuario = Usuario.query.filter_by(email=email).first()
 
-    # XP ALEATÓRIO
     xp = random.randint(10,20)
 
     usuario.pontos += xp
@@ -315,6 +315,9 @@ def planos():
 
 @app.route("/checkout/<plano>")
 def checkout(plano):
+
+    if not sdk:
+        return "Erro: pagamento indisponível"
 
     precos = {
         "Projeto Apex": 10,
