@@ -8,42 +8,114 @@
 <style>
 
 body{
-background:#0D0D0D;
+background: linear-gradient(180deg,#0D0D0D,#050505);
 color:white;
 font-family:Arial;
 text-align:center;
-padding:40px;
+padding:30px;
 }
 
-table{
-margin:auto;
-border-collapse:collapse;
-width:500px;
-}
-
-th,td{
-padding:12px;
-border-bottom:1px solid #333;
-}
-
-th{
+/* TITULO */
+h1{
 color:#D4AF37;
+margin-bottom:10px;
 }
 
-tr:hover{
-background:#1a1a1a;
-}
-
-.top{
-color:#FFD700;
-font-weight:bold;
-}
-
+/* POSIÇÃO */
 .posicao{
 margin-bottom:30px;
 font-size:18px;
-color:#D4AF37;
+color:#00ff88;
 font-weight:bold;
+}
+
+/* PODIUM */
+.podium{
+display:flex;
+justify-content:center;
+align-items:flex-end;
+gap:20px;
+margin-bottom:40px;
+}
+
+.card-top{
+background:#111;
+padding:15px;
+border-radius:12px;
+width:120px;
+box-shadow:0 0 15px rgba(212,175,55,0.2);
+}
+
+.first{
+height:160px;
+border:2px solid gold;
+}
+
+.second{
+height:130px;
+}
+
+.third{
+height:110px;
+}
+
+.medal{
+font-size:28px;
+}
+
+/* LISTA */
+.lista{
+max-width:500px;
+margin:auto;
+}
+
+/* CARD USUARIO */
+.user-card{
+display:flex;
+justify-content:space-between;
+align-items:center;
+background:#111;
+padding:15px;
+margin-bottom:10px;
+border-radius:10px;
+transition:0.3s;
+}
+
+.user-card:hover{
+background:#1a1a1a;
+}
+
+/* USUÁRIO LOGADO */
+.meu{
+border:1px solid #00ff88;
+background:#1f2a1f;
+}
+
+/* INFO */
+.nome{
+font-weight:bold;
+}
+
+.pontos{
+color:#D4AF37;
+}
+
+.streak{
+color:#ff4444;
+}
+
+/* BARRA */
+.bar{
+height:6px;
+background:#333;
+border-radius:5px;
+margin-top:5px;
+}
+
+.bar-fill{
+height:6px;
+background:#00ff88;
+border-radius:5px;
 }
 
 </style>
@@ -52,40 +124,67 @@ font-weight:bold;
 
 <body>
 
-<h1 style="color:#D4AF37">
-🏆 Ranking Global
-</h1>
+<h1>🏆 Ranking Global</h1>
 
 <h3 class="posicao">
-Sua posição global: {{posicao}}
+Sua posição: #{{posicao}}
 </h3>
 
-<table>
+<!-- 🔥 PODIUM -->
+<div class="podium">
 
-<tr>
-<th>#</th>
-<th>Nome</th>
-<th>Pontos</th>
-<th>Streak</th>
-</tr>
+{% if usuarios|length >= 2 %}
+<div class="card-top second">
+<div class="medal">🥈</div>
+<div>{{usuarios[1].nome}}</div>
+<div class="pontos">{{usuarios[1].pontos}} XP</div>
+</div>
+{% endif %}
+
+{% if usuarios|length >= 1 %}
+<div class="card-top first">
+<div class="medal">🥇</div>
+<div>{{usuarios[0].nome}}</div>
+<div class="pontos">{{usuarios[0].pontos}} XP</div>
+</div>
+{% endif %}
+
+{% if usuarios|length >= 3 %}
+<div class="card-top third">
+<div class="medal">🥉</div>
+<div>{{usuarios[2].nome}}</div>
+<div class="pontos">{{usuarios[2].pontos}} XP</div>
+</div>
+{% endif %}
+
+</div>
+
+<!-- 🔥 LISTA -->
+<div class="lista">
 
 {% for u in usuarios %}
 
-<tr>
+<div class="user-card {% if u.email == usuario_logado %}meu{% endif %}">
 
-<td class="{% if loop.index <= 3 %}top{% endif %}">
-{{loop.index}}
-</td>
+<div>
+<div class="nome">#{{loop.index}} - {{u.nome}}</div>
+<div class="streak">🔥 {{u.streak}} dias</div>
 
-<td>{{u.nome}}</td>
-<td>{{u.pontos}}</td>
-<td>🔥 {{u.streak}}</td>
+<div class="bar">
+<div class="bar-fill" style="width: {{u.pontos}}px;"></div>
+</div>
 
-</tr>
+</div>
+
+<div class="pontos">
+{{u.pontos}} XP
+</div>
+
+</div>
 
 {% endfor %}
 
-</table>
+</div>
 
 <br><br>
 

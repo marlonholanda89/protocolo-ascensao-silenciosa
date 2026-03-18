@@ -204,7 +204,6 @@ def ranking():
 
     usuarios = Usuario.query.order_by(Usuario.pontos.desc()).all()
 
-    # descobrir posição do usuário logado
     posicao = None
 
     for i, u in enumerate(usuarios, start=1):
@@ -215,7 +214,8 @@ def ranking():
     return render_template(
         "ranking.html",
         usuarios=usuarios,
-        posicao=posicao
+        posicao=posicao,
+        usuario_logado=email  # 🔥 ESSA LINHA RESOLVE TUDO
     )
 
 
