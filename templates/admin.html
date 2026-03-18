@@ -1,21 +1,114 @@
-<h1>Painel Admin</h1>
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Painel Admin</title>
 
-<table border="1">
-    <tr>
-        <th>Nome</th>
-        <th>Email</th>
-        <th>Plano</th>
-        <th>Pontos</th>
-        <th>Streak</th>
-    </tr>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    {% for u in usuarios %}
-    <tr>
-        <td>{{ u.nome }}</td>
-        <td>{{ u.email }}</td>
-        <td>{{ u.plano }}</td>
-        <td>{{ u.pontos }}</td>
-        <td>{{ u.streak }}</td>
-    </tr>
-    {% endfor %}
-</table>
+<style>
+body {
+    font-family: Arial;
+    background: #0f0f0f;
+    color: white;
+    padding: 20px;
+}
+
+h1, h2 {
+    text-align: center;
+}
+
+.card {
+    background: #1c1c1c;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #1c1c1c;
+}
+
+th, td {
+    padding: 10px;
+    text-align: center;
+}
+
+th {
+    background: #2a2a2a;
+}
+
+tr:nth-child(even) {
+    background: #161616;
+}
+
+canvas {
+    max-width: 600px;
+    margin: auto;
+    display: block;
+}
+</style>
+
+</head>
+<body>
+
+<h1>🔥 Painel Admin</h1>
+
+<div class="card">
+    <h2>💰 Faturamento total</h2>
+    <h1>R$ {{ faturamento }}</h1>
+</div>
+
+<div class="card">
+    <h2>📊 Usuários</h2>
+
+    <table>
+        <tr>
+            <th>Nome</th>
+            <th>Email</th>
+            <th>Plano</th>
+            <th>Pontos</th>
+            <th>Streak</th>
+        </tr>
+
+        {% for u in usuarios %}
+        <tr>
+            <td>{{ u.nome }}</td>
+            <td>{{ u.email }}</td>
+            <td>{{ u.plano }}</td>
+            <td>{{ u.pontos }}</td>
+            <td>{{ u.streak }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+
+<div class="card">
+    <h2>📊 Usuários por Plano</h2>
+    <canvas id="graficoUsuarios"></canvas>
+</div>
+
+<script>
+const data = {
+    labels: ["Gratis", "Projeto Apex", "Código Ascensão", "Protocolo Vértice"],
+    datasets: [{
+        label: "Usuários por plano",
+        data: [
+            {{ usuarios | selectattr("plano", "equalto", "Gratis") | list | length }},
+            {{ usuarios | selectattr("plano", "equalto", "Projeto Apex") | list | length }},
+            {{ usuarios | selectattr("plano", "equalto", "Código Ascensão") | list | length }},
+            {{ usuarios | selectattr("plano", "equalto", "Protocolo Vértice") | list | length }}
+        ]
+    }]
+};
+
+new Chart(document.getElementById("graficoUsuarios"), {
+    type: "bar",
+    data: data
+});
+</script>
+
+</body>
+</html>

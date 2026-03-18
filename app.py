@@ -193,11 +193,15 @@ def dashboard():
 
 @app.route("/ranking")
 def ranking():
+    email = session.get("email")
+
+    if not email:
+        return redirect(url_for("login"))
+
     usuarios = Usuario.query.order_by(
         Usuario.pontos.desc()
     ).limit(10).all()
 
-    email = session.get("email")
     usuario = Usuario.query.filter_by(email=email).first()
 
     posicao = Usuario.query.filter(
@@ -301,7 +305,7 @@ def planos():
     return render_template("planos.html")
 
 
-# 🔥 PAINEL ADMIN (AQUI FOI ADICIONADO)
+# 🔥 ADMIN PROFISSIONAL
 @app.route("/admin")
 def admin():
 
@@ -317,7 +321,23 @@ def admin():
 
     usuarios = Usuario.query.all()
 
-    return render_template("admin.html", usuarios=usuarios)
+    # 💰 faturamento
+    precos = {
+        "Projeto Apex": 10,
+        "Código Ascensão": 49.90,
+        "Protocolo Vértice": 99.90
+    }
+
+    faturamento = 0
+
+    for u in usuarios:
+        faturamento += precos.get(u.plano, 0)
+
+    return render_template(
+        "admin.html",
+        usuarios=usuarios,
+        faturamento=faturamento
+    )
 
 
 @app.route("/checkout/<plano>")
@@ -350,10 +370,6 @@ def checkout(plano):
         ],
         "payer": {
             "email": usuario.email
-        },
-        "payment_methods": {
-            "excluded_payment_types": [],
-            "installments": 12
         },
         "notification_url": request.host_url + "webhook",
         "back_urls": {
