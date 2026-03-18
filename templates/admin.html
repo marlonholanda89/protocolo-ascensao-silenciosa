@@ -1,0 +1,21 @@
+<h1>Painel Admin</h1>
+
+<table border="1">
+    <tr>
+        <th>Nome</th>
+        <th>Email</th>
+        <th>Plano</th>
+        <th>Pontos</th>
+        <th>Streak</th>
+    </tr>
+
+    {% for u in usuarios %}
+    <tr>
+        <td>{{ u.nome }}</td>
+        <td>{{ u.email }}</td>
+        <td>{{ u.plano }}</td>
+        <td>{{ u.pontos }}</td>
+        <td>{{ u.streak }}</td>
+    </tr>
+    {% endfor %}
+</table>

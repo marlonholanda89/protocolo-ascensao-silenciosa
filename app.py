@@ -21,7 +21,6 @@ if DATABASE_URL:
     if DATABASE_URL.startswith("postgres://"):
         DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 
-    # ✅ SSL obrigatório pro Supabase
     if "sslmode" not in DATABASE_URL:
         DATABASE_URL += "?sslmode=require"
 
@@ -46,7 +45,6 @@ class Usuario(db.Model):
     streak = db.Column(db.Integer, default=0)
 
 
-# ✅ Garante criação sem quebrar produção
 with app.app_context():
     try:
         db.create_all()
@@ -59,7 +57,6 @@ dias_programa = 30
 
 
 def calcular_nivel(pontos):
-
     niveis = [
         (350,"Ascendido"),
         (200,"Elite"),
@@ -67,7 +64,6 @@ def calcular_nivel(pontos):
         (50,"Discípulo"),
         (0,"Iniciado")
     ]
-
     for limite,nome in niveis:
         if pontos >= limite:
             return nome
@@ -138,9 +134,7 @@ def index():
 
 @app.route("/register", methods=["GET","POST"])
 def register():
-
     if request.method == "POST":
-
         nome = request.form.get("nome")
         email = request.form.get("email")
         senha = request.form.get("senha")
@@ -162,9 +156,7 @@ def register():
 
 @app.route("/login", methods=["GET","POST"])
 def login():
-
     if request.method == "POST":
-
         email = request.form.get("email")
         senha = request.form.get("senha")
 
@@ -181,14 +173,12 @@ def login():
 
 @app.route("/dashboard")
 def dashboard():
-
     email = session.get("email")
 
     if not email:
         return redirect(url_for("login"))
 
     usuario = Usuario.query.filter_by(email=email).first()
-
     nivel = calcular_nivel(usuario.pontos)
 
     return render_template(
@@ -203,7 +193,6 @@ def dashboard():
 
 @app.route("/ranking")
 def ranking():
-
     usuarios = Usuario.query.order_by(
         Usuario.pontos.desc()
     ).limit(10).all()
@@ -224,7 +213,6 @@ def ranking():
 
 @app.route("/conteudo")
 def conteudo():
-
     email = session.get("email")
 
     if not email:
@@ -232,7 +220,6 @@ def conteudo():
 
     usuario = Usuario.query.filter_by(email=email).first()
 
-    # 🔥 ADMIN TEM ACESSO TOTAL
     if usuario.plano == "Gratis":
         return redirect(url_for("planos"))
 
@@ -249,7 +236,6 @@ def conteudo():
     dias = []
 
     for i in range(1, limite+1):
-
         if i <= progresso_usuario:
             status = "completo"
         elif i == progresso_usuario + 1:
@@ -267,7 +253,6 @@ def conteudo():
 
 @app.route("/dia/<int:numero>")
 def dia(numero):
-
     email = session.get("email")
 
     if not email:
@@ -275,10 +260,7 @@ def dia(numero):
 
     usuario = Usuario.query.filter_by(email=email).first()
 
-    progresso_usuario = usuario.streak
-
-    # 🔥 ADMIN PODE ACESSAR QUALQUER DIA
-    if usuario.plano != "Admin" and numero > progresso_usuario + 1:
+    if usuario.plano != "Admin" and numero > usuario.streak + 1:
         return redirect(url_for("conteudo"))
 
     conteudo = conteudos.get(numero)
@@ -298,7 +280,6 @@ def dia(numero):
 
 @app.route("/completar_dia")
 def completar_dia():
-
     email = session.get("email")
 
     if not email:
@@ -307,7 +288,6 @@ def completar_dia():
     usuario = Usuario.query.filter_by(email=email).first()
 
     xp = random.randint(10,20)
-
     usuario.pontos += xp
     usuario.streak += 1
 
@@ -319,6 +299,25 @@ def completar_dia():
 @app.route("/planos")
 def planos():
     return render_template("planos.html")
+
+
+# 🔥 PAINEL ADMIN (AQUI FOI ADICIONADO)
+@app.route("/admin")
+def admin():
+
+    email = session.get("email")
+
+    if not email:
+        return redirect(url_for("login"))
+
+    usuario = Usuario.query.filter_by(email=email).first()
+
+    if usuario.plano != "Admin":
+        return redirect(url_for("dashboard"))
+
+    usuarios = Usuario.query.all()
+
+    return render_template("admin.html", usuarios=usuarios)
 
 
 @app.route("/checkout/<plano>")
