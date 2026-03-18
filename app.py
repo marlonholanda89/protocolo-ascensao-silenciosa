@@ -91,7 +91,7 @@ frases = [
 ]
 
 
-# 🔥 NOVO: CONTEÚDO POR PLANO
+# CONTEÚDO FIXO (só dia 1, o resto é automático)
 conteudos = {
 
 "Projeto Apex": {
@@ -194,30 +194,6 @@ def dashboard():
     )
 
 
-@app.route("/ranking")
-def ranking():
-    email = session.get("email")
-
-    if not email:
-        return redirect(url_for("login"))
-
-    usuarios = Usuario.query.order_by(
-        Usuario.pontos.desc()
-    ).limit(10).all()
-
-    usuario = Usuario.query.filter_by(email=email).first()
-
-    posicao = Usuario.query.filter(
-        Usuario.pontos > usuario.pontos
-    ).count() + 1
-
-    return render_template(
-        "ranking.html",
-        usuarios=usuarios,
-        posicao=posicao
-    )
-
-
 @app.route("/conteudo")
 def conteudo():
     email = session.get("email")
@@ -230,9 +206,10 @@ def conteudo():
     if usuario.plano == "Gratis":
         return redirect(url_for("planos"))
 
+    # 🔥 TODOS COM 30 DIAS
     limites = {
-        "Projeto Apex":10,
-        "Código Ascensão":20,
+        "Projeto Apex":30,
+        "Código Ascensão":30,
         "Protocolo Vértice":30
     }
 
@@ -270,18 +247,35 @@ def dia(numero):
     if usuario.plano != "Admin" and numero > usuario.streak + 1:
         return redirect(url_for("conteudo"))
 
-    # 🔥 NOVO: conteúdo por plano
     plano = usuario.plano
     conteudo = conteudos.get(plano, {}).get(numero)
 
+    # 🔥 GERADOR AUTOMÁTICO
     if conteudo is None:
+
+        base = numero * 2
+
+        if plano == "Projeto Apex":
+            treino = f"{10+base} flexões\n{15+base} agachamentos\n{20+base}s prancha"
+
+        elif plano == "Código Ascensão":
+            treino = f"{20+base} flexões\n{25+base} agachamentos\n{30+base}s prancha"
+
+        else:
+            treino = f"{30+base} flexões\n{40+base} agachamentos\n{45+base}s prancha"
+
         conteudo = {
-        "titulo":"Treinamento de Ascensão",
-        "imagem":"vegeta1.jpeg",
-        "treino":"20 flexões\n30 agachamentos\n40 segundos prancha\nRepetir 3 vezes",
-        "acao": random.choice(acoes),
-        "desafio":"Banho gelado de 1 minuto hoje.",
-        "frase": random.choice(frases)
+            "titulo": f"Dia {numero} - Evolução",
+            "imagem": "vegeta1.jpeg",
+            "treino": treino,
+            "acao": random.choice(acoes),
+            "desafio": random.choice([
+                "Banho gelado hoje",
+                "1h sem celular",
+                "Foco total no dia",
+                "Sem redes sociais"
+            ]),
+            "frase": random.choice(frases)
         }
 
     return render_template("dia.html", numero=numero, conteudo=conteudo)
@@ -310,7 +304,6 @@ def planos():
     return render_template("planos.html")
 
 
-# 🔥 ADMIN
 @app.route("/admin")
 def admin():
 
