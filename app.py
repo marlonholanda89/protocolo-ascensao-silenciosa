@@ -91,39 +91,42 @@ frases = [
 ]
 
 
+# 🔥 NOVO: CONTEÚDO POR PLANO
 conteudos = {
+
+"Projeto Apex": {
 1:{
 "titulo":"Disciplina Inicial",
 "imagem":"vegeta1.jpeg",
-"treino":"10 flexões\n15 agachamentos\n20 segundos prancha\nRepetir 3 vezes",
-"acao":"Lave o rosto com água gelada agora.",
-"desafio":"Fique 2 horas sem redes sociais.",
-"frase":"Disciplina é fazer o que precisa ser feito mesmo quando você não quer."
+"treino":"10 flexões\n15 agachamentos\n20s prancha\nRepetir 3x",
+"acao":"Lave o rosto com água gelada",
+"desafio":"Leia 30 minutos hoje",
+"frase":"Disciplina básica cria consistência."
+}
 },
-2:{
+
+"Código Ascensão": {
+1:{
 "titulo":"Controle Mental",
 "imagem":"goku1.jpeg",
-"treino":"12 flexões\n20 agachamentos\n30 segundos prancha\nRepetir 3 vezes",
-"acao":"Respire profundamente por 30 segundos.",
-"desafio":"Gelo no rosto 1 min.",
-"frase":"A mente controla o corpo. Domine sua mente."
-},
-3:{
-"titulo":"Foco Absoluto",
-"imagem":"goku1.jpeg",
-"treino":"15 flexões\n25 agachamentos\n30 segundos prancha\nRepetir 3 vezes",
-"acao":"Coloque gelo no rosto por 20 segundos.",
-"desafio":"1 hora sem celular.",
-"frase":"Homens comuns se distraem. Homens fortes se concentram."
-},
-4:{
-"titulo":"Rotina de Guerra",
-"imagem":"goku1.jpeg",
-"treino":"20 flexões\n30 agachamentos\n40 segundos prancha\nRepetir 3 vezes",
-"acao":"Beba um copo grande de água agora.",
-"desafio":"Banho gelado de 5 minuto.",
-"frase":"A disciplina diária constrói guerreiros."
+"treino":"20 flexões\n25 agachamentos\n30s prancha\nRepetir 3x",
+"acao":"Gelo no rosto por 1 minuto",
+"desafio":"1h sem celular + postura perfeita",
+"frase":"Controle mental define quem vence."
 }
+},
+
+"Protocolo Vértice": {
+1:{
+"titulo":"Modo Elite",
+"imagem":"vegeta1.jpeg",
+"treino":"30 flexões\n40 agachamentos\n45s prancha\nRepetir 4x",
+"acao":"Gelo + respiração profunda",
+"desafio":"Sem redes sociais + leitura + foco total",
+"frase":"Você não é comum. Aja como elite."
+}
+}
+
 }
 
 
@@ -267,7 +270,9 @@ def dia(numero):
     if usuario.plano != "Admin" and numero > usuario.streak + 1:
         return redirect(url_for("conteudo"))
 
-    conteudo = conteudos.get(numero)
+    # 🔥 NOVO: conteúdo por plano
+    plano = usuario.plano
+    conteudo = conteudos.get(plano, {}).get(numero)
 
     if conteudo is None:
         conteudo = {
@@ -305,7 +310,7 @@ def planos():
     return render_template("planos.html")
 
 
-# 🔥 ADMIN PROFISSIONAL
+# 🔥 ADMIN
 @app.route("/admin")
 def admin():
 
@@ -321,7 +326,6 @@ def admin():
 
     usuarios = Usuario.query.all()
 
-    # 💰 faturamento
     precos = {
         "Projeto Apex": 10,
         "Código Ascensão": 49.90,
