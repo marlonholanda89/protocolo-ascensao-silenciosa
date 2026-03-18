@@ -21,7 +21,7 @@ if DATABASE_URL:
     if DATABASE_URL.startswith("postgres://"):
         DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 
-    # ✅ GARANTE SSL PARA SUPABASE
+    # ✅ SSL obrigatório pro Supabase
     if "sslmode" not in DATABASE_URL:
         DATABASE_URL += "?sslmode=require"
 
@@ -46,7 +46,7 @@ class Usuario(db.Model):
     streak = db.Column(db.Integer, default=0)
 
 
-# ✅ CORREÇÃO SEGURA (não quebra no Supabase)
+# ✅ Garante criação sem quebrar produção
 with app.app_context():
     try:
         db.create_all()
@@ -232,6 +232,7 @@ def conteudo():
 
     usuario = Usuario.query.filter_by(email=email).first()
 
+    # 🔥 ADMIN TEM ACESSO TOTAL
     if usuario.plano == "Gratis":
         return redirect(url_for("planos"))
 
@@ -241,7 +242,7 @@ def conteudo():
         "Protocolo Vértice":30
     }
 
-    limite = limites.get(usuario.plano,0)
+    limite = 30 if usuario.plano == "Admin" else limites.get(usuario.plano, 0)
 
     progresso_usuario = usuario.streak
 
@@ -276,7 +277,8 @@ def dia(numero):
 
     progresso_usuario = usuario.streak
 
-    if numero > progresso_usuario + 1:
+    # 🔥 ADMIN PODE ACESSAR QUALQUER DIA
+    if usuario.plano != "Admin" and numero > progresso_usuario + 1:
         return redirect(url_for("conteudo"))
 
     conteudo = conteudos.get(numero)
