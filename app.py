@@ -21,6 +21,10 @@ if DATABASE_URL:
     if DATABASE_URL.startswith("postgres://"):
         DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 
+    # ✅ GARANTE SSL PARA SUPABASE
+    if "sslmode" not in DATABASE_URL:
+        DATABASE_URL += "?sslmode=require"
+
     app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URL
 else:
     BASE_DIR = os.path.abspath(os.path.dirname(__file__))
@@ -42,10 +46,12 @@ class Usuario(db.Model):
     streak = db.Column(db.Integer, default=0)
 
 
-# ✅ CORREÇÃO AQUI
+# ✅ CORREÇÃO SEGURA (não quebra no Supabase)
 with app.app_context():
-    if not DATABASE_URL:
+    try:
         db.create_all()
+    except Exception as e:
+        print("Erro ao criar/verificar banco:", e)
 
 
 nome_plataforma = "Protocolo Ascensão Silenciosa"
