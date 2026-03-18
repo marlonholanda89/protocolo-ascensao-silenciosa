@@ -215,7 +215,7 @@ def ranking():
         "ranking.html",
         usuarios=usuarios,
         posicao=posicao,
-        usuario_logado=email  # 🔥 ESSA LINHA RESOLVE TUDO
+        usuario_logado=email
     )
 
 
