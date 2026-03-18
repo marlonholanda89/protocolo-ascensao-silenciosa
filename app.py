@@ -91,7 +91,6 @@ frases = [
 ]
 
 
-# CONTEÚDO FIXO (só dia 1, o resto é automático)
 conteudos = {
 
 "Projeto Apex": {
@@ -194,6 +193,32 @@ def dashboard():
     )
 
 
+# 🔥 RANKING (ADICIONADO)
+@app.route("/ranking")
+def ranking():
+
+    email = session.get("email")
+
+    if not email:
+        return redirect(url_for("login"))
+
+    usuarios = Usuario.query.order_by(Usuario.pontos.desc()).all()
+
+    # descobrir posição do usuário logado
+    posicao = None
+
+    for i, u in enumerate(usuarios, start=1):
+        if u.email == email:
+            posicao = i
+            break
+
+    return render_template(
+        "ranking.html",
+        usuarios=usuarios,
+        posicao=posicao
+    )
+
+
 @app.route("/conteudo")
 def conteudo():
     email = session.get("email")
@@ -206,7 +231,6 @@ def conteudo():
     if usuario.plano == "Gratis":
         return redirect(url_for("planos"))
 
-    # 🔥 TODOS COM 30 DIAS
     limites = {
         "Projeto Apex":30,
         "Código Ascensão":30,
@@ -247,20 +271,17 @@ def dia(numero):
     if usuario.plano != "Admin" and numero > usuario.streak + 1:
         return redirect(url_for("conteudo"))
 
-    plano = usuario.plano
+    plano = usuario.plano.strip()
     conteudo = conteudos.get(plano, {}).get(numero)
 
-    # 🔥 GERADOR AUTOMÁTICO
     if conteudo is None:
 
         base = numero * 2
 
         if plano == "Projeto Apex":
             treino = f"{10+base} flexões\n{15+base} agachamentos\n{20+base}s prancha"
-
         elif plano == "Código Ascensão":
             treino = f"{20+base} flexões\n{25+base} agachamentos\n{30+base}s prancha"
-
         else:
             treino = f"{30+base} flexões\n{40+base} agachamentos\n{45+base}s prancha"
 
