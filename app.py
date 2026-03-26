@@ -7,6 +7,12 @@ import os
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY", "supersegredo")
 
+# 🔥 NOVO (ANTI-QUEDA DE BANCO NO RENDER)
+app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
+    "pool_pre_ping": True,
+    "pool_recycle": 300,
+}
+
 # TOKEN MERCADO PAGO
 ACCESS_TOKEN = os.getenv("MP_ACCESS_TOKEN")
 
@@ -52,6 +58,17 @@ with app.app_context():
         print("Erro ao criar/verificar banco:", e)
 
 
+# 🔥 NOVO (NUNCA MAIS TELA BRANCA)
+@app.errorhandler(500)
+def erro_500(e):
+    print("ERRO 500:", e)
+    return render_template("erro.html"), 500
+
+@app.errorhandler(404)
+def erro_404(e):
+    return "<h1>Página não encontrada</h1>", 404
+
+
 nome_plataforma = "Protocolo Ascensão Silenciosa"
 dias_programa = 30
 
@@ -69,15 +86,56 @@ def calcular_nivel(pontos):
             return nome
 
 
-acoes = [
-"Coloque gelo no rosto por 20 segundos.",
-"Lave o rosto com água gelada.",
-"Beba um copo grande de água agora.",
-"Respire profundamente por 1 minuto.",
-"Molhe o rosto com água fria.",
-"Fique 10 minutos sem celular.",
-"Faça 30 segundos de respiração profunda.",
-"Olhe para frente e respire fundo 20 vezes."
+acoes_produtivas = [
+"Arrume sua cama agora.",
+"Organize seu ambiente por 5 minutos.",
+"Beba 500ml de água.",
+"Lave o rosto e fique apresentável.",
+"Fique 10 minutos sem celular e sem distração.",
+"Corrija sua postura por 5 minutos.",
+"Limpe algo ao seu redor (mesa, quarto, etc).",
+"Respire fundo e se recomponha mentalmente.",
+"Planeje rapidamente o resto do seu dia.",
+"Saia para pegar ar por 2 minutos."
+]
+
+desafios_base = [
+"Ler 10 páginas de um livro.",
+"Treinar mesmo sem vontade.",
+"Ficar 2 horas sem redes sociais.",
+"Evitar açúcar hoje.",
+"Beber pelo menos 2L de água.",
+"Não reclamar de nada hoje.",
+"Evitar conteúdo inútil.",
+"Focar em melhorar sua postura o dia inteiro.",
+"Não procrastinar nenhuma tarefa importante.",
+"Finalizar algo que você vem adiando."
+]
+
+desafios_intermediario = [
+"Ler 20 páginas.",
+"Treinar com intensidade máxima.",
+"3h sem redes sociais.",
+"Banho gelado obrigatório.",
+"Sem pornografia hoje.",
+"Sem fast food.",
+"Planejar amanhã antes de dormir.",
+"Fazer algo desconfortável propositalmente.",
+"Evitar dopamina barata o dia todo.",
+"Acordar mais cedo que o normal."
+]
+
+desafios_elite = [
+"Ler 30 páginas.",
+"Treino pesado completo + disciplina total.",
+"Sem redes sociais o dia inteiro.",
+"Banho gelado + controle mental.",
+"Dieta limpa 100% hoje.",
+"Executar tudo sem reclamar.",
+"1h de foco absoluto (deep work).",
+"Zero distrações inúteis.",
+"Treinar mesmo cansado.",
+"Superar seu limite físico hoje."
 ]
 
 
@@ -193,7 +251,7 @@ def dashboard():
     )
 
 
-# 🔥 RANKING (ADICIONADO)
+# 🔥 RANKING MELHORADO (SEM QUEBRAR)
 @app.route("/ranking")
 def ranking():
 
@@ -202,21 +260,26 @@ def ranking():
     if not email:
         return redirect(url_for("login"))
 
-    usuarios = Usuario.query.order_by(Usuario.pontos.desc()).all()
+    try:
+        usuarios = Usuario.query.order_by(Usuario.pontos.desc()).limit(100).all()
 
-    posicao = None
+        posicao = None
 
-    for i, u in enumerate(usuarios, start=1):
-        if u.email == email:
-            posicao = i
-            break
+        for i, u in enumerate(usuarios, start=1):
+            if u.email == email:
+                posicao = i
+                break
 
-    return render_template(
-        "ranking.html",
-        usuarios=usuarios,
-        posicao=posicao,
-        usuario_logado=email
-    )
+        return render_template(
+            "ranking.html",
+            usuarios=usuarios,
+            posicao=posicao,
+            usuario_logado=email
+        )
+
+    except Exception as e:
+        print("Erro ranking:", e)
+        return "<h1>Erro ao carregar ranking</h1>"
 
 
 @app.route("/conteudo")
@@ -276,28 +339,43 @@ def dia(numero):
 
     if conteudo is None:
 
-        base = numero * 2
+    # 🔥 ESCALA DE TREINO INTELIGENTE
+    if plano == "Projeto Apex":
+        treino = f"""
+{10 + numero*2} flexões
+{15 + numero*2} agachamentos
+{20 + numero*2}s prancha
++ caminhada leve 10 min
+"""
+        desafio = random.choice(desafios_base)
 
-        if plano == "Projeto Apex":
-            treino = f"{10+base} flexões\n{15+base} agachamentos\n{20+base}s prancha"
-        elif plano == "Código Ascensão":
-            treino = f"{20+base} flexões\n{25+base} agachamentos\n{30+base}s prancha"
-        else:
-            treino = f"{30+base} flexões\n{40+base} agachamentos\n{45+base}s prancha"
+    elif plano == "Código Ascensão":
+        treino = f"""
+{20 + numero*3} flexões
+{25 + numero*3} agachamentos
+{30 + numero*2}s prancha
++ corrida leve 15 min
+"""
+        desafio = random.choice(desafios_intermediario)
 
-        conteudo = {
-            "titulo": f"Dia {numero} - Evolução",
-            "imagem": "vegeta1.jpeg",
-            "treino": treino,
-            "acao": random.choice(acoes),
-            "desafio": random.choice([
-                "Banho gelado hoje",
-                "1h sem celular",
-                "Foco total no dia",
-                "Sem redes sociais"
-            ]),
-            "frase": random.choice(frases)
-        }
+    else:  # Protocolo Vértice
+        treino = f"""
+{30 + numero*4} flexões
+{40 + numero*4} agachamentos
+{45 + numero*3}s prancha
++ corrida ou cardio 20 min
++ exercício extra (abdominal ou barra)
+"""
+        desafio = random.choice(desafios_elite)
+
+    conteudo = {
+        "titulo": f"Dia {numero} - Evolução",
+        "imagem": "vegeta1.jpeg",
+        "treino": treino,
+        "acao": random.choice(acoes_produtivas),
+        "desafio": desafio,
+        "frase": random.choice(frases)
+    }
 
     return render_template("dia.html", numero=numero, conteudo=conteudo)
 
