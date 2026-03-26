@@ -339,43 +339,43 @@ def dia(numero):
 
     if conteudo is None:
 
-    # 🔥 ESCALA DE TREINO INTELIGENTE
-    if plano == "Projeto Apex":
-        treino = f"""
+        # 🔥 ESCALA DE TREINO INTELIGENTE
+        if plano == "Projeto Apex":
+            treino = f"""
 {10 + numero*2} flexões
 {15 + numero*2} agachamentos
 {20 + numero*2}s prancha
 + caminhada leve 10 min
 """
-        desafio = random.choice(desafios_base)
+            desafio = random.choice(desafios_base)
 
-    elif plano == "Código Ascensão":
-        treino = f"""
+        elif plano == "Código Ascensão":
+            treino = f"""
 {20 + numero*3} flexões
 {25 + numero*3} agachamentos
 {30 + numero*2}s prancha
 + corrida leve 15 min
 """
-        desafio = random.choice(desafios_intermediario)
+            desafio = random.choice(desafios_intermediario)
 
-    else:  # Protocolo Vértice
-        treino = f"""
+        else:  # Protocolo Vértice
+            treino = f"""
 {30 + numero*4} flexões
 {40 + numero*4} agachamentos
 {45 + numero*3}s prancha
 + corrida ou cardio 20 min
 + exercício extra (abdominal ou barra)
 """
-        desafio = random.choice(desafios_elite)
+            desafio = random.choice(desafios_elite)
 
-    conteudo = {
-        "titulo": f"Dia {numero} - Evolução",
-        "imagem": "vegeta1.jpeg",
-        "treino": treino,
-        "acao": random.choice(acoes_produtivas),
-        "desafio": desafio,
-        "frase": random.choice(frases)
-    }
+        conteudo = {
+            "titulo": f"Dia {numero} - Evolução",
+            "imagem": "vegeta1.jpeg",
+            "treino": treino,
+            "acao": random.choice(acoes_produtivas),
+            "desafio": desafio,
+            "frase": random.choice(frases)
+        }
 
     return render_template("dia.html", numero=numero, conteudo=conteudo)
 
